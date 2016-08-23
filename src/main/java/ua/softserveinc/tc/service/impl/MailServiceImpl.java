@@ -47,7 +47,6 @@ public class MailServiceImpl implements MailService {
         helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(text, true);
-        helper.setFrom(new InternetAddress(MailConstants.EMAIL_BOT_ADDRESS));
 
         synchronized (message) {
             mailSender.send(message);
