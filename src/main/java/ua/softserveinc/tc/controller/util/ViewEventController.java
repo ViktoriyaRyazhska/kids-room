@@ -36,7 +36,7 @@ public class ViewEventController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = {"/","home"}, method = RequestMethod.GET)
     public final String viewHome(Model model, Principal principal) {
 
         if (principal == null) {
