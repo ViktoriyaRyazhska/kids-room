@@ -68,8 +68,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendRegisterMessage(String subject, User user, String token) throws MessagingException {
-        String context = request.getServerName();
-        Map<String, Object> model = getModel(user, context+MailConstants.CONFIRM_USER_LINK, token);
+        Map<String, Object> model = getModel(user, MailConstants.CONFIRM_USER_LINK, token);
         sendMessage(user.getEmail(), subject, getTextMessage(MailConstants.CONFIRM_USER_VM, model));
     }
 
