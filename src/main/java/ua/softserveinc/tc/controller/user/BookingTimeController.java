@@ -18,6 +18,7 @@ import ua.softserveinc.tc.util.JsonUtil;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -61,7 +62,13 @@ public class BookingTimeController {
         });
 
         List<BookingDto> dto = bookingService.persistBookingsFromDtoAndSetId(dtos);
+
+        if (dto.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Gson().toJson(dto));
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(dto));
+
 
     }
 
@@ -89,8 +96,8 @@ public class BookingTimeController {
         end.set(Calendar.MINUTE, 0);
         end.set(Calendar.SECOND, 0);
         end.add(Calendar.MONTH, 1);
-
-        return JsonUtil.toJson(roomService.getBlockedPeriods(room, start, end));
+        Map<String, String> mp = roomService.getBlockedPeriods(room, start, end);
+        return JsonUtil.toJson(mp);
     }
 
     @RequestMapping(value = "getrecurrentbookings", method = RequestMethod.POST)

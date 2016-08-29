@@ -119,6 +119,9 @@ $(function () {
     });
 
     $('#create-new-event').click(function () {
+        var newEventDate = $('#calendar').fullCalendar('getDate').format();
+        $('#title').val(newEventDate.substring(0, 10));
+        $('#endDate').val(newEventDate.substring(0, 10));
         $('#dialog').dialog('open');
     });
 
@@ -240,6 +243,7 @@ function renderCalendarForManager(objects, roomID, workingHoursStart, workingHou
 
     $('#calendar').fullCalendar({
         slotDuration: '00:15:00',
+        timeFormat : 'HH:mm',
         minTime: workingHoursStart,
         maxTime: workingHoursEnd,
 
@@ -530,3 +534,7 @@ function deleteRecurrentEvents(recurrentId) {
         }
     });
 }
+
+
+
+

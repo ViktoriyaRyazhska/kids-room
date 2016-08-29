@@ -6,6 +6,10 @@
 <%@ page import="ua.softserveinc.tc.constants.ValidationConstants" %>
 
 <link rel='stylesheet' href='resources/css/registerkid.css'>
+<script src="resources/js/edit-my-kid.js"></script>
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
 
 <form:form class = "registerkid"  enctype="application/x-www-form-urlencoded"
 modelAttribute="<%=ChildConstants.View.KID_ATTRIBUTE %>" action="editmykid" method="post">
@@ -55,7 +59,7 @@ modelAttribute="<%=ChildConstants.View.KID_ATTRIBUTE %>" action="editmykid" meth
       <div class="form-group">
                     <label for="comment"><spring:message code="kid.comment" /></label>
                     <form:textarea path="comment" id="comment"
-                    value="${kid.getComment()}" rows="7" cols="50" class="form-control"/>
+                    value="${kid.getComment()}" class="form-control common"/>
       </div>
 
       <button class="btn btn-raised btn-success" type="submit" name="action">
@@ -64,11 +68,36 @@ modelAttribute="<%=ChildConstants.View.KID_ATTRIBUTE %>" action="editmykid" meth
 
       <footer class="removekidmsg">
       <p class="explanation"> <spring:message code="requiredfield.explanation" /> </p>
-      <spring:message code="editkid.footmsg1" />
-      <a href="removemykid?id=${kid.getId()}">
-      <spring:message code="editkid.footmsg2" />
-      </a>
+       <spring:message code="editkid.deactivatekid1" />
+      <div id="removeKids" style="text-decoration: underline">
+          <spring:message code="editkid.deactivatekid2"/>
+       </div>
       </footer>
-      </div>
-
+    </div>
 </form:form>
+    <%--confirmation-dialog--%>
+    <div class="container">
+        <div class="vertical-center-row">
+            <div align="center">
+                <div id="confirmation-dialog-div" class="ui-dialog"  title=<spring:message code= "editkid.confirmationtitle" /> hidden>
+                    <form id="confirm-your-choice" class="confirm-form">
+                        <div style = "align:center; color:red; text-align:center;">
+                            <p><span style="color:red; text-align:center;" >
+                                <spring:message code="editkid.confirmdeactivatekid1"/> </span> </p>
+                            <p><span style="color:red; text-align:center;" >
+                                <spring:message code="editkid.confirmdeactivatekid2"/> </span> </p>
+                        </div>
+                        <button type="button" class="btn btn-success pull-left" id="confirmYes">
+                            <spring:message code= "editkid.deactivateYes"/>
+                        </button>
+                        <button type="button" class="btn btn-danger pull-right" id="confirmNo">
+                            <spring:message code= "editkid.deactivateNo"/>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+

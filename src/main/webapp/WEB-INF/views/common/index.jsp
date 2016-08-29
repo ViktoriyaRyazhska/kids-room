@@ -19,7 +19,6 @@
 
 <script src='resources/js/renderCalendar.js'></script>
 
-
 <link href='resources/css/formForCalendar.css' rel='stylesheet'/>
 
 
@@ -30,11 +29,12 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 
+
 <body>
 
 <sec:authorize access="hasRole('USER')">
 
-
+    <%--bookingUpdatingDialog--%>
     <div class="container">
         <div class="vertical-center-row">
             <div align="center">
@@ -78,9 +78,9 @@
                         <button type="button" class="btn btn-danger pull-right" id="deletingBooking">Cancel</button>
 
                         <button type="button" class="btn btn-xs btn-warning col-xs-12" id="deleting-single-booking">
-                            Delete this
-                            booking
+                            <spring:message code= "booking.deleteBooking"/>
                         </button>
+                            <%--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#cancelModal">Delete this booking</button>--%>
 
                     </form>
                 </div>
@@ -88,7 +88,7 @@
         </div>
     </div>
 
-
+    <%--make-recurrent-booking--%>
     <div class="container">
         <div class="vertical-center-row">
             <div align="center">
@@ -133,11 +133,11 @@
                                         <div class="radio-button">
                                             <label><input type="radio" name="optradio-bookingform"
                                                           id="no-recurrent-booking"
-                                                          class="booking-radio" checked>Single event</label>
+                                                          class="booking-radio" checked> Single event</label>
                                         </div>
                                         <div class="radio-button">
                                             <label><input type="radio" name="optradio-bookingform" id="weekly-booking"
-                                                          class="booking-radio">Weekly</label>
+                                                          class="booking-radio"> Weekly</label>
                                         </div>
                                     </div>
                                     <div class="col-xs-8 pull-right" id="days-for-recurrent-booking-form" hidden>
@@ -211,14 +211,18 @@
 
 
                                 <br>
+                                <div id="data-validation-information-string-container" class="clearfix">
+                                    <p class="col-xs-12" style="color:red" id="data-validation-information-string"></p>
+                                </div>
+
                                 <div class="clearfix"></div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-3 row ">
                                     <button type="button" class="btn btn-success" id="update-recurrent-booking"
                                             hidden="true">Update
                                     </button>
                                     <button type="button" class="btn btn-success live" id="book">Book</button>
                                 </div>
-                                <div class="col-xs-9 ">
+                                <div class="col-xs-3 row pull-right ">
                                     <button type="button" class="btn btn-danger pull-right" id="cancel-changes">Cancel
                                     </button>
                                 </div>
@@ -231,7 +235,7 @@
         </div>
     </div>
 
-
+    <%--recurrent-change--%>
     <div class="container">
         <div class="vertical-center-row">
             <div align="center">
@@ -256,17 +260,30 @@
         </div>
     </div>
 
-    <div class="error" id="error-dialog"></div>
     <div class="container">
+        <div class="eventInfo" >
 
+            <h3 id="eventTitle">Title</h3>
 
-        <button type="button" class="btn btn-success" id="create-new-booking">Make booking</button>
+            <span class="time" id="startTime"></span>
+            <span class="time" id="endTime"></span><br/>
+            <div class="eventDescription">
+                <span id="eventDescription"></span>
+            </div>
+        </div>
 
+    </div>
+
+    <div class="container">
 
         <button type="button" class="btn btn-success pull-right" data-toggle="modal"
                 data-target=".bs-modal-lg-colourInfo">
             &nbsp; <span class="glyphicon glyphicon-info-sign"></span>&nbsp;
         </button>
+
+        <button type="button" class="btn btn-success" id="create-new-booking">Make booking</button>
+
+
 
         <div class="modal fade bs-modal-lg-colourInfo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
             <div class="modal-dialog modal-lg">
@@ -277,13 +294,30 @@
                         <div align="center">
 
                             <br>
-                            <h2  ><span class="glyphicon glyphicon-stop"></span> - means that</h2>
-                            <h2  ><span class="glyphicon glyphicon-stop"></span> - means this  </h2>
-                            <h2  ><span class="glyphicon glyphicon-stop"></span> - means this  </h2>
-                            <h2  ><span class="glyphicon glyphicon-stop"></span> - means this  </h2>
-                            <h2  ><span class="glyphicon glyphicon-stop"></span> - means this  </h2>
-                            <h2  ><span class="glyphicon glyphicon-stop"></span> - means this  </h2>
-                            <br>
+
+                            <div class="col-xs-4">
+                                <h1  > <span style="vertical-align:middle ;color: #4CAF50;" class="glyphicon glyphicon-stop" ></span></h1>your booking
+                            </div> <div class="col-xs-4">
+                            <h1  > <span style="vertical-align:middle ;color: #EEEEEE;" class="glyphicon glyphicon-stop" ></span></h1>room
+                        </div> <div class="col-xs-4">
+                            <h1  > <span style="vertical-align:middle ;color: #ff0000;" class="glyphicon glyphicon-stop" ></span></h1>fully booked room
+                        </div>
+                            <div class="col-xs-12">
+                                <h3  >
+                                    <span style="vertical-align:middle ;color: #d3af37;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #84fff7;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #4CAF50;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #f98e2e;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #636363;" class="glyphicon glyphicon-stop" ></span>
+                                </h3>
+                                <h3  > <span style="vertical-align:middle ;color: #1ba1e2;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #044d92;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #9b3aa1;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #ffcd5c;" class="glyphicon glyphicon-stop" ></span>
+                                    <span style="vertical-align:middle ;color: #eb6f63;" class="glyphicon glyphicon-stop" ></span>  </h3>
+                                events
+
+                            </div>
                             <span>SoftServe Inc</span>
 
 
@@ -325,6 +359,7 @@
     <div class="container">
         <div id='user-calendar'></div>
     </div>
+
 
 </sec:authorize>
 
@@ -376,29 +411,6 @@
                         </div>
 
                         <br><br>
-                            <%--fefe
-
-
-
-                            <table class="table">
-                                <thead>Check required days</thead>
-                                <tbody>
-                                <tr>
-                                    <td><label><input type="checkbox" id="Monday" value="Mon" class="day">Monday </label><br></td>
-                                    <td><label><input type="checkbox" id="Tuesday" value="Tue" class="day">Tuesday</label><br></td>
-                                </tr>
-                                <tr>
-                                    <td><label><input type="checkbox" id="Wednesday" value="Wed" class="day">Wednesday </label><br>
-                                    </td>
-                                    <td><label><input type="checkbox" id="Thursday" value="Thu" class="day">Thursday</label><br></td>
-                                </tr>
-                                <tr>
-                                    <td><label><input type="checkbox" id="Friday" value="Fri" class="day">Friday </label><br></td>
-                                    <td><label><input type="checkbox" id="Saturday" value="Sat" class="day">Saturday</label><br></td>
-                                </tr>
-                                </tbody>
-                            </table>
-    --%>
 
                         <label for="recurrent-event-description">Description</label>
                         <textarea class="form-control" id="recurrent-event-description"
@@ -421,34 +433,34 @@
                 <div id="dialog" class="dialog" hidden>
                     <form id="form">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <div class="form-group">
+                        <div class="col-xs-12 form-group">
                             <label for="startDate">Event title</label>
                             <input type="text" class="form-control" id="startDate" placeholder="title">
                         </div>
                         <div class="form-group">
                             <label for="title">Choose a color</label>
                             <select id="color-select">
-                                <option value="#ff0000" style="background:red">red</option>
-                                <option value="#ffff00" style="background:yellow">yellow</option>
-                                <option value="#800080" style="background:purple">purple</option>
-                                <option value="#0000ff" style="background:blue">blue</option>
-                                <option value="#6AA4C1" style="background:#6AA4C1" selected="selected">light blue
+                                <option value="#eb6f63" style="background:red">red</option>
+                                <option value="#ffcd5c" style="background:yellow">yellow</option>
+                                <option value="#9b3aa1" style="background:purple">purple</option>
+                                <option value="#044d92" style="background:blue">blue</option>
+                                <option value="#1ba1e2" style="background:#6AA4C1" selected="selected">light blue
                                 </option>
-                                <option value="#808080" style="background:grey">grey</option>
-                                <option value="#008000" style="background:green">green</option>
-                                <option value="#ffa500" style="background:orange">orange</option>
-                                <option value="#00ffff" style="background:aqua">aqua</option>
-                                <option value="#ffd700" style="background:gold">gold<br></option>
+                                <option value="#636363" style="background:grey">grey</option>
+                                <option value="#51d466" style="background:green">green</option>
+                                <option value="#f98e2e" style="background:orange">orange</option>
+                                <option value="#84fff7" style="background:aqua">aqua</option>
+                                <option value="#d3af37" style="background:gold">gold<br></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="title">Start date</label>
                             <br>
                             <div class="col-xs-6">
-                                <input type="date" class="form-control" id="title" placeholder="startDate">
+                                <input type="date" class="text-center form-control" id="title" placeholder="startDate">
                             </div>
                             <div class="col-xs-6">
-                                <input id="basicExample" type="text" class="time form-control timepicker" size="6"/>
+                                <input id="basicExample" type="text" class=" text-center time form-control timepicker" size="6"/>
                             </div>
                         </div>
                         <br>
@@ -457,10 +469,10 @@
                             <label for="endDate">End date</label>
                             <br>
                             <div class="col-xs-6">
-                                <input type="date" class="form-control" id="endDate" placeholder="endDate">
+                                <input type="date" class="text-center form-control" id="endDate" placeholder="endDate">
                             </div>
                             <div class="col-xs-6">
-                                <input id="ender" type="text" class="time form-control timepicker" size="6"/>
+                                <input id="ender" type="text" class="text-center time form-control timepicker" size="6"/>
                             </div>
                         </div>
 
@@ -472,37 +484,37 @@
                                         <br>
                                         <div class="radio-button">
                                             <label><input type="radio" name="optradio" id="no-recurrent"
-                                                          class="my-radio" checked>Single event</label>
+                                                          class="my-radio" checked> Single event</label>
                                         </div>
                                         <div class="radio-button">
-                                            <label><input type="radio" name="optradio" id="weekly" class="my-radio">Weekly</label>
+                                            <label><input type="radio" name="optradio" id="weekly" class="my-radio"> Weekly</label>
                                         </div>
                                         <div class="radio-button" hidden>
-                                            <label><input type="radio" name="optradio" id="monthly" class="my-radio">Monthly</label>
+                                            <label><input type="radio" name="optradio" id="monthly" class="my-radio"> Monthly</label>
                                         </div>
                                     </div>
                                     <div class="row col-xs-9" id="days-for-recurrent-form" hidden>
                                         <table class="table" id="days-for-recurrent">
                                             <br>
-                                            <thead>Check required days</thead>
+                                            <thead >Check required days</thead>
                                             <tbody>
                                             <tr>
-                                                <td><label><input type="checkbox" id="Monday" value="Mon" class="day">Monday</label><br>
+                                                <td><label><input type="checkbox" id="Monday" value="Mon" class="day"> Monday</label><br>
                                                 </td>
-                                                <td><label><input type="checkbox" id="Tuesday" value="Tue" class="day">Tuesday</label><br>
+                                                <td><label><input type="checkbox" id="Tuesday" value="Tue" class="day"> Tuesday</label><br>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td><label><input type="checkbox" id="Wednesday" value="Wed"
-                                                                  class="day">Wednesday</label><br>
+                                                                  class="day"> Wednesday</label><br>
                                                 </td>
-                                                <td><label><input type="checkbox" id="Thursday" value="Thu" class="day">Thursday</label><br>
+                                                <td><label><input type="checkbox" id="Thursday" value="Thu" class="day"> Thursday</label><br>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><label><input type="checkbox" id="Friday" value="Fri" class="day">Friday</label><br>
+                                                <td><label><input type="checkbox" id="Friday" value="Fri" class="day"> Friday</label><br>
                                                 </td>
-                                                <td><label><input type="checkbox" id="Saturday" value="Sat" class="day">Saturday</label><br>
+                                                <td><label><input type="checkbox" id="Saturday" value="Sat" class="day"> Saturday</label><br>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -511,7 +523,7 @@
                                 </form>
                                 <br><br><br><br><br><br><br><br><br><br>
                                 <div class="clearfix"></div>
-                                <div class="col-sm-5">
+                                <div class="col-sm-12">
                                     <label for="description">Description</label>
                                     <input type="text" size="15" class="form-control" id="description"
                                            placeholder="description">
@@ -557,8 +569,8 @@
                                 <input type="text" class="form-control" id="startDayUpdate" placeholder="startDate"
                                        readonly>
                             </div>
-                            <div class="col-xs-5">
-                                <input id="startTimeUpdate" type="text" class="time form-control timepicker" size="6"/>
+                            <div class="col-xs-6">
+                                <input id="startTimeUpdate" type="text" class="text-center time form-control timepicker" size="6"/>
                             </div>
                         </div>
                         <br>
@@ -570,19 +582,22 @@
                                 <input type="text" class="form-control" id="endDateUpdate" placeholder="endDate"
                                        readonly>
                             </div>
-                            <div class="col-xs-5">
-                                <input id="endTimeUpdate" type="text" class="time form-control timepicker" size="6"/>
+                            <div class="col-xs-6">
+                                <input id="endTimeUpdate" type="text" class="text-center time form-control timepicker" size="6"/>
                             </div>
                         </div>
-
+                        <br>
                         <div class="form-group">
                             <label for="descriptionUpdate">Description</label>
                             <textarea type="text" class="form-control" id="descriptionUpdate"
                                       placeholder="description"></textarea>
                         </div>
-                        <div class="deleting-event" id="deleting-single-event">Click here to delete this event</div>
-                        <button type="button" class="btn btn-success" id="updatingButton">Update</button>
-                        <button type="button" class="btn btn-danger" id="cancel-update">Cancel</button>
+
+                        <button type="button" class="col-xs-6 btn btn-success" id="updatingButton">Update</button>
+                        <button type="button" class="pull-right btn btn-danger" id="cancel-update">Cancel</button>
+                        <button type="button" class="col-xs-12 deleting-event btn btn-warning btn-xs" id="deleting-single-event">Delete this event</button>
+
+
 
                     </form>
                 </div>
@@ -623,5 +638,29 @@
 <sec:authorize access="hasRole('ADMINISTRATOR')">
 
 </sec:authorize>
+
+<%--confirmation-dialog--%>
+<div class="container">
+    <div class="vertical-center-row">
+        <div align="center">
+            <div id="confirmation-dialog-div" class="ui-dialog"  title=<spring:message code= "booking.confirmTitle" /> hidden>
+                <form id="confirm-your-choice">
+                    <div style = "align:center; color:red; text-align:center;">
+                        <p><span style="color:red; text-align:center;" >
+                                <spring:message code= "booking.confirmCancelQuestion1"/> </span> </p>
+                        <p><span style="color:red; text-align:center;" >
+                                <spring:message code= "booking.confirmCancelQuestion2"/></span> </p>
+                    </div>
+                    <button type="button" class="btn btn-success pull-left" id="confirmYes">
+                        <spring:message code= "editkid.deactivateYes"/>
+                    </button>
+                    <button type="button" class="btn btn-danger pull-right" id="confirmNo">
+                        <spring:message code= "editkid.deactivateNo"/>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
