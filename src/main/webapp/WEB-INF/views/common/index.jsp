@@ -47,7 +47,7 @@
                             </label>
                             <br>
                             <div class="col-xs-6  ">
-                                <input type="text" class="form-control" id="bookingUpdatingStartDate"
+                                <input type="text" class="text-center form-control" id="bookingUpdatingStartDate"
                                        placeholder="startDate"
                                        readonly>
                             </div>
@@ -66,7 +66,7 @@
                             </label>
                             <br>
                             <div class="col-xs-6  ">
-                                <input type="text" class="form-control" id="bookingUpdatingEndDate"
+                                <input type="text" class="text-center form-control" id="bookingUpdatingEndDate"
                                        placeholder="endDate"
                                        readonly>
                             </div>
@@ -78,6 +78,11 @@
                         </div>
                         <br>
                         <textarea class="col-xs-12" type="text" id="child-comment-update"></textarea>
+                        <br>
+                        <div id="data-validation-information-string-container" class="clearfix">
+                            <p class="col-xs-12 data-validation-information-string" style="color:red" id="data-validation-information-string"></p>
+                        </div>
+                        <br>
                         <button type="button" class="btn btn-success" id="updatingBooking">
                             <spring:message code= "booking.update"/>
                         </button>
@@ -87,7 +92,7 @@
 
                         <div class = "col-xs-12">
 
-                            <footer class="delete-recurrent-booking">
+                            <footer class="deleteBookingButtonLink">
                                 <div id="deleting-single-booking" style="text-decoration: underline; text-align: center;">
                                     <spring:message code="booking.deleteBooking"/>
                                 </div>
@@ -146,19 +151,23 @@
                         <div class="col-xs-12">
                             <div class="row">
                                 <form role="form">
-                                    <div class="row col-xs-4">
+                                    <div class="row col-xs-5">
                                         <br>
                                         <div class="radio-button">
                                             <label><input type="radio" name="optradio-bookingform"
                                                           id="no-recurrent-booking"
-                                                          class="booking-radio" checked> Single event</label>
+                                                          class="booking-radio" checked>
+                                                <spring:message code= "booking.singleBooking"/>
+                                            </label>
                                         </div>
                                         <div class="radio-button">
                                             <label><input type="radio" name="optradio-bookingform" id="weekly-booking"
-                                                          class="booking-radio"> Weekly</label>
+                                                          class="booking-radio">
+                                                <spring:message code= "booking.weeklyBooking"/>
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="col-xs-8 pull-right" id="days-for-recurrent-booking-form" hidden>
+                                    <div class="col-xs-7 pull-right" id="days-for-recurrent-booking-form" hidden>
                                         <table class="table" id="days-for-recurrent-booking">
                                             <br>
                                             <thead>Check required days</thead>
@@ -168,23 +177,23 @@
                                                                   class="day"> <spring:message code= "monday"/></label><br>
                                                 </td>
                                                 <td><label><input type="checkbox" id="Tuesday-booking" value="Tue"
-                                                                  class="day"><spring:message code= "tuestay"/></label><br>
+                                                                  class="day"> <spring:message code= "tuestay"/></label><br>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td><label><input type="checkbox" id="Wednesday-booking" value="Wed"
-                                                                  class="day"><spring:message code= "wednesday"/></label><br>
+                                                                  class="day"> <spring:message code= "wednesday"/></label><br>
                                                 </td>
                                                 <td><label><input type="checkbox" id="Thursday-booking" value="Thu"
-                                                                  class="day"><spring:message code= "thursday"/></label><br>
+                                                                  class="day"> <spring:message code= "thursday"/></label><br>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td><label><input type="checkbox" id="Friday-booking" value="Fri"
-                                                                  class="day"><spring:message code= "friday"/></label><br>
+                                                                  class="day"> <spring:message code= "friday"/></label><br>
                                                 </td>
                                                 <td><label><input type="checkbox" id="Saturday-booking" value="Sat"
-                                                                  class="day"><spring:message code= "saturday"/></label><br>
+                                                                  class="day"> <spring:message code= "saturday"/></label><br>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -230,7 +239,7 @@
 
                                 <br>
                                 <div id="data-validation-information-string-container" class="clearfix">
-                                    <p class="col-xs-12" style="color:red" id="data-validation-information-string"></p>
+                                    <p class="col-xs-12 data-validation-information-string" style="color:red" id="data-validation-information-string"></p>
                                 </div>
 
                                 <div class="clearfix"></div>
@@ -251,7 +260,7 @@
                                 <div class = "col-xs-12">
 
                                     <footer class="delete-recurrent-booking">
-                                        <div id="delete-recurrent-booking" style="text-decoration: underline; text-align: center;">
+                                        <div id="delete-recurrent-booking" style="text-decoration: underline; text-align: center;" hidden="true">
                                             <spring:message code="booking.deleteBooking"/>
                                         </div>
                                     </footer>
@@ -269,9 +278,8 @@
     <div class="container">
         <div class="vertical-center-row">
             <div align="center">
-                <div id="recurrent-change" class="dialog" hidden>
+                <div id="recurrent-change" title = "<spring:message code= "booking.edit"/>" class="dialog" hidden>
                     <form id="choose-updating-booking-form">
-
                         <div class="radio-button">
                             <label><input type="radio" id="single-update-booking" name="radio-check" checked>
                                 <spring:message code= "recurrent.justThisOne"/>
@@ -708,22 +716,28 @@
 
 <%--confirmation-dialog--%>
 <div class="container">
-    <div class="vertical-center-row">
+    <div class="modal-dialog modal-lg vertical-center-row ">
         <div align="center">
             <div id="confirmation-dialog-div" class="ui-dialog"  title=<spring:message code= "booking.confirmTitle" /> hidden>
                 <form id="confirm-your-choice">
-                    <div style = "align:center; color:red; text-align:center;">
-                        <p><span style="color:red; text-align:center;" >
+                    <div class= confirmDelete">
+                        <p><span style="text-align:center;" >
                                 <spring:message code= "booking.confirmCancelQuestion1"/> </span> </p>
-                        <p><span style="color:red; text-align:center;" >
+                        <p><span style="text-align:center;" >
                                 <spring:message code= "booking.confirmCancelQuestion2"/></span> </p>
                     </div>
-                    <button type="button" class="btn btn-success pull-left" id="confirmYes">
-                        <spring:message code= "editkid.deactivateYes"/>
-                    </button>
-                    <button type="button" class="btn btn-danger pull-right" id="confirmNo">
-                        <spring:message code= "editkid.deactivateNo"/>
-                    </button>
+                    <div class="col-xs-12" style = "display: flex; align-items: center;justify-content: center;" >
+                        <div class="col-xs-6">
+                            <button type="button"  class="btn btn-success" id="confirmYes">
+                                <spring:message code= "booking.confirmYes"/>
+                            </button>
+                        </div>
+                        <div class = col-xs-6>
+                            <button type="button" class="btn btn-danger" id="confirmNo">
+                                <spring:message code= "booking.confirmNo"/>
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

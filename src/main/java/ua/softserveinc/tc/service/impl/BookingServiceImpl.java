@@ -15,7 +15,9 @@ import ua.softserveinc.tc.util.DateUtil;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static ua.softserveinc.tc.util.DateUtil.toDateAndTime;
@@ -72,11 +74,8 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking> implements Book
     @Override
     public void calculateAndSetSum(Booking booking) {
         calculateAndSetDuration(booking);
-
-        List<Rate> rates = booking.getRoom().getRates();
-        Rate closestRate = rateService.calculateAppropriateRate(booking.getDuration(), rates);
-
-        booking.setSum(closestRate.getPriceRate());
+        Long sum = rateService.calculateBookingCost(booking);
+        booking.setSum(sum);
         booking.setBookingState(BookingState.COMPLETED);
         bookingDao.update(booking);
     }
@@ -116,9 +115,12 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking> implements Book
         Booking booking = findById(bookingDto.getId());
         Date date = replaceBookingTime(booking, bookingDto.getEndTime());
         booking.setBookingEndTime(date);
-        resetSumAndDuration(booking);
+        calculateAndSetSum(booking);
         return booking;
     }
+
+
+
 
     private void resetSumAndDuration(Booking booking) {
         booking.setDuration(0L);
@@ -300,9 +302,9 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking> implements Book
         return persistBookingsFromDtoAndSetId(newRecurrentBooking);
     }
 
-    public String getRecurrentBookingForEditingById(long bookingId){
+    public BookingDto getRecurrentBookingForEditingById(long bookingId){
 
-        RecurentBookToReturn recurentBookToReturn = new RecurentBookToReturn();
+        BookingDto recurentBookToReturn = new BookingDto();
         List<Booking> listOfRecurrentBooking = new LinkedList<Booking>();
         listOfRecurrentBooking = bookingDao.getRecurrentBookingsByRecurrentId(bookingId);
         List<BookingDto> listOfRecurrentBookingDto = new LinkedList<BookingDto>();
@@ -316,88 +318,27 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking> implements Book
             }
         });
         try {
-            recurentBookToReturn.startDate = listOfRecurrentBookingDto.get(0).getDate();
-            recurentBookToReturn.endDate  = listOfRecurrentBookingDto.get(listOfRecurrentBookingDto.size()-1).getDate();
-            recurentBookToReturn.startTime = listOfRecurrentBookingDto.get(0).getStartTime();
-            recurentBookToReturn.endTime = listOfRecurrentBookingDto.get(0).getEndTime();
-            recurentBookToReturn.comment = listOfRecurrentBookingDto.get(0).getComment();
+            recurentBookToReturn.setDate(listOfRecurrentBookingDto.get(0).getDate());
+            recurentBookToReturn.setEndDate(listOfRecurrentBookingDto.get(listOfRecurrentBookingDto.size()-1).getDate());;
+            recurentBookToReturn.setStartTime(listOfRecurrentBookingDto.get(0).getStartTime());
+            recurentBookToReturn.setEndTime(listOfRecurrentBookingDto.get(0).getEndTime());
+            boolean bookedDaysOfWeek[] = {false,false,false,false,false,false};
             Calendar calendar = Calendar.getInstance();
             for (Booking booking : listOfRecurrentBooking) {
                 calendar.setTime(booking.getBookingStartTime());
                 int day = calendar.get(Calendar.DAY_OF_WEEK);
-                recurentBookToReturn.bookedDaysOfWeek[day-2]=true;
+                bookedDaysOfWeek[day-2]=true;
             }
-            recurentBookToReturn.recurentId = bookingId;
+            String nameOfDays[]=new String[] {"Mon","Tue","Wed","Thu","Fri","Sat"};
+            String days="";
+            for (int i=0; i < nameOfDays.length; i++){
+                if (bookedDaysOfWeek[i]) days+=" "+nameOfDays[i];
+            }
+            recurentBookToReturn.setDaysOfWeek(days);
+            recurentBookToReturn.setRecurrentId(bookingId);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Gson().toJson(recurentBookToReturn);
+        return recurentBookToReturn;
     };
-}
-
-class RecurentBookToReturn implements Serializable {
-    Long recurentId;
-    String startDate;
-    String endDate;
-    String startTime;
-    String endTime;
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    String comment;
-    boolean [] bookedDaysOfWeek = {false,false,false,false,false,false};
-
-    public Long getRecurentId() {
-        return recurentId;
-    }
-
-    public void setRecurentId(Long recurentId) {
-        this.recurentId = recurentId;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public boolean[] getBookedDaysOfWeek() {
-        return bookedDaysOfWeek;
-    }
-
-    public void setBookedDaysOfWeek(boolean[] bookedDaysOfWeek) {
-        this.bookedDaysOfWeek = bookedDaysOfWeek;
-    }
 }
