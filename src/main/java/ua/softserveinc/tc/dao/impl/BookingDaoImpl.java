@@ -40,6 +40,12 @@ public class BookingDaoImpl extends BaseDaoImpl<Booking> implements BookingDao {
 
         List<Predicate> restrictions = new ArrayList<>();
         if (startDate != null && endDate != null) {
+            //add one day for including last day in parent report
+            Calendar c = Calendar.getInstance();
+            c.setTime(endDate);
+            c.add(Calendar.DATE, 1);
+            endDate = c.getTime();
+
             restrictions.add(builder.between(root.get(
                     BookingConstants.Entity.START_TIME), startDate, endDate));
         }
@@ -76,18 +82,17 @@ public class BookingDaoImpl extends BaseDaoImpl<Booking> implements BookingDao {
     }
 
     public List<Booking> getRecurrentBookingsByRecurrentId(Long recurrentId){
-
         CriteriaQuery<Booking> query = null;
         try {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             query = builder.createQuery(Booking.class);
             Root<Booking> root = query.from(Booking.class);
-            query.select(root).where(builder.equal(root.get(BookingConstants.Entity.RECURRENTID), recurrentId));
+            query.select(root).where(builder.equal(root.get(BookingConstants.Entity.RECURRENTID), recurrentId)).
+                    orderBy(builder.asc(root.get(BookingConstants.Entity.START_TIME)));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
         }
         return entityManager.createQuery(query).getResultList();
     };
-
 }

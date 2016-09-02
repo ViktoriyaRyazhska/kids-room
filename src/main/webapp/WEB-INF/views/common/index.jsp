@@ -4,31 +4,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <link href='resources/css/fullcalendar.css' rel='stylesheet'/>
 <link href='resources/css/fullcalendar.print.css' rel='stylesheet' media='print'/>
 
-
-<script src='resources/js/moment.min.js'></script>
-
-<script src='resources/js/jquery.min.js'></script>
-<script src='resources/js/fullcalendar.js'></script>
-<script src='resources/js/header-manager.js'></script>
-<script src='resources/js/header-user.js'></script>
-
-<script src='resources/js/userCalendar.js'></script>
-
-<script src='resources/js/renderCalendar.js'></script>
-
 <link href='resources/css/formForCalendar.css' rel='stylesheet'/>
-
-
-<script type="text/javascript" src="resources/js/jquery.timepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/jquery.timepicker.css"/>
-
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-
+<link href='resources/css/flow-form.css' rel='stylesheet'/>
+<link href='resources/css/manager-no-rooms.css' rel='stylesheet'/>
 
 <body>
 
@@ -121,7 +104,7 @@
                                 <spring:message code= "booking.startDate"/>
                             </label>
                             <br>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 choose-booking">
                                 <input type="date" class="text-center form-control" id="recurrent-booking-start-date"
                                        placeholder="startDate">
                             </div>
@@ -137,9 +120,9 @@
                                 <spring:message code= "booking.endDate"/>
                             </label>
                             <br>
-                            <div class="col-xs-6">
-                                <input type="date" class="text-center form-control" id="recurrent-booking-end-date"
-                                       placeholder="endDate">
+                            <div class="col-xs-6 choose-booking">
+                                <input type="date" class="text-center form-control " id="recurrent-booking-end-date"
+                                       placeholder="endDate" disabled="true">
                             </div>
                             <div class="col-xs-6">
                                 <input id="recurrent-booking-end-time" type="text" class="text-center time form-control timepicker"
@@ -151,7 +134,7 @@
                         <div class="col-xs-12">
                             <div class="row">
                                 <form role="form">
-                                    <div class="row col-xs-5">
+                                    <div class="row col-xs-5 choose-booking">
                                         <br>
                                         <div class="radio-button">
                                             <label><input type="radio" name="optradio-bookingform"
@@ -318,10 +301,6 @@
 
     </div>
 
-    <%--<div id="confirmation-dialog" title="Delete booking" hidden>--%>
-        <%--<p><span id="confirmation-dialog-message" class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Booking will be permanently deleted and cannot be recovered. Are you sure?</p>--%>
-    <%--</div>--%>
-
     <%--create-new-booking--%>
     <div class="container">
 
@@ -424,12 +403,23 @@
 
 
     <c:forEach items="${managersRoom}" var="r">
-
         ${r.id}
-
     </c:forEach>
 
+    <c:if test="${rooms.isEmpty()}">
+        <div id="manager-no-rooms">
+            <h1>
+          <span class="label label-warning" id="radius">
+          <spring:message code="manager.oops"/></span>
+            </h1>
+            <h3 class="center"><spring:message code="manager.noRooms" /></h3>
+        </div>
+        <div class="desert">
+            <div class="tumbleweed"></div>
+        </div>
+    </c:if>
 
+    <c:if test="${!rooms.isEmpty()}">
     <div class="container">
         <div class="vertical-center-row">
             <div align="center">
@@ -437,12 +427,12 @@
                     <form id="form-dialog-recurrently">
 
                         <div class="form-group">
-                            <label for="recurrent-event-title">Event title</label>
+                            <label for="recurrent-event-title"><spring:message code="eventTitle"/></label>
                             <input type="text" class="form-control" id="recurrent-event-title" placeholder="title">
                         </div>
 
                         <div class="form-group">
-                            <label for="recurrent-event-start-date">Start date</label>
+                            <label for="recurrent-event-start-date"><spring:message code="booking.startDate"/></label>
                             <br>
                             <div class="col-xs-6">
                                 <input type="date" class="form-control" id="recurrent-event-start-date"
@@ -455,7 +445,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="recurrent-event-end-date">End date</label>
+                            <label for="recurrent-event-end-date"><spring:message code="booking.endDate"/></label>
                             <br>
                             <div class="col-xs-6">
                                 <input type="date" class="form-control" id="recurrent-event-end-date"
@@ -491,8 +481,8 @@
                     <form id="form">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="col-xs-12 form-group">
-                            <label for="startDate">Event title</label>
-                            <input type="text" class="form-control" id="startDate" placeholder="title">
+                            <label for="event-title">Event title</label>
+                            <input type="text" class="form-control" id="event-title" placeholder="Event title">
                         </div>
                         <div class="form-group">
                             <label for="title">Choose a color</label>
@@ -604,6 +594,10 @@
                                            placeholder="description">
                                 </div>
                                 <br>
+                                    <div id="data-validation-information-string-container" class="clearfix">
+                                        <p class="col-xs-12 data-validation-information-string" style="color:red" id="data-validation-information-string"></p>
+                                    </div>
+                                <br>
                                 <div class="clearfix"></div>
                                 <div class="deleting-event" id="deleting-recurrent-event" hidden>Click here to delete
                                     this event
@@ -667,7 +661,11 @@
                             <textarea type="text" class="form-control" id="descriptionUpdate"
                                       placeholder="description"></textarea>
                         </div>
-
+                        <br>
+                            <div id="data-validation-information-string-container" class="clearfix">
+                                <p class="col-xs-12 data-validation-information-string" style="color:red" id="data-validation-information-string"></p>
+                            </div>
+                        <br>
                         <button type="button" class="col-xs-6 btn btn-success" id="updatingButton">Update</button>
                         <button type="button" class="pull-right btn btn-danger" id="cancel-update">Cancel</button>
                         <button type="button" class="col-xs-12 deleting-event btn btn-warning btn-xs" id="deleting-single-event">Delete this event</button>
@@ -708,7 +706,7 @@
         <button type="button" class="btn btn-success" id="create-new-event">New event</button>
         <div id='calendar'></div>
     </div>
-
+    </c:if>
 </sec:authorize>
 <sec:authorize access="hasRole('ADMINISTRATOR')">
 
@@ -720,19 +718,19 @@
         <div align="center">
             <div id="confirmation-dialog-div" class="ui-dialog"  title=<spring:message code= "booking.confirmTitle" /> hidden>
                 <form id="confirm-your-choice">
-                    <div class= confirmDelete">
+                    <div class= "confirmDelete">
                         <p><span style="text-align:center;" >
                                 <spring:message code= "booking.confirmCancelQuestion1"/> </span> </p>
                         <p><span style="text-align:center;" >
                                 <spring:message code= "booking.confirmCancelQuestion2"/></span> </p>
                     </div>
-                    <div class="col-xs-12" style = "display: flex; align-items: center;justify-content: center;" >
-                        <div class="col-xs-6">
+                    <div class="col-xs-12" >
+                        <div class="col-xs-6" style = "text-align: center">
                             <button type="button"  class="btn btn-success" id="confirmYes">
                                 <spring:message code= "booking.confirmYes"/>
                             </button>
                         </div>
-                        <div class = col-xs-6>
+                        <div class = col-xs-6" style = "text-align: center">
                             <button type="button" class="btn btn-danger" id="confirmNo">
                                 <spring:message code= "booking.confirmNo"/>
                             </button>
@@ -743,5 +741,21 @@
         </div>
     </div>
 </div>
+<%--error-dialog--%>
+<div id="error-dialog" type="hidden"></div>
+
+<script src='resources/js/moment.min.js'></script>
+<script src='resources/js/jquery.min.js'></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src='resources/js/fullcalendar.js'></script>
+<script type="text/javascript" src="resources/js/jquery.timepicker.js"></script>
+
+<script src='resources/js/header-manager.js'></script>
+<script src='resources/js/header-user.js'></script>
+<script src='resources/js/manager-create-events-validator.js'></script>
+<script src='resources/js/user-create-booking-validator.js'></script>
+<script src='resources/js/userCalendar.js'></script>
+<script src='resources/js/renderCalendar.js'></script>
+<script src='resources/js/single-booking.js'></script>
 
 </body>
