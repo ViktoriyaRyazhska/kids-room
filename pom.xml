@@ -30,10 +30,7 @@
                 <configuration>
 		    <url>http://localhost:8080/manager/text</url>
                     <server>LocalTomcat7</server>
-		    <username>admin</username>
-		    <password>admin</password>
-                    <path>/home</path>
-		    <update>true</update>
+                    <path>/home</path>>
                 </configuration>
             </plugin>
         </plugins>
