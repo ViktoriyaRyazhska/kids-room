@@ -33,6 +33,7 @@
 		    <username>admin</username>
 		    <password>admin</password>
                     <path>/home</path>
+		    <update>true</update>
                 </configuration>
             </plugin>
         </plugins>
