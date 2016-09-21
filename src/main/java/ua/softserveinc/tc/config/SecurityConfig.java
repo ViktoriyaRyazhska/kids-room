@@ -269,7 +269,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
-        metadataGenerator.setEntityId("kidsroom:test:sasha:guydye");
+        metadataGenerator.setEntityId("kidsroom:deploy:marian:seliuchenko");
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager());
